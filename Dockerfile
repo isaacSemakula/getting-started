@@ -50,3 +50,7 @@ COPY --from=app-zip-creator /app.zip /app.zip
 RUN apk add --no-cache unzip && unzip /app.zip -d /app
 
 CMD ["node", "src/index.js"]
+add final runtime stage to run node app on container start
+FROM app-base
+WORKDIR /app
+CMD ["node", "src/index.js"]
