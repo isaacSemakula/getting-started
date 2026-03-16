@@ -42,3 +42,4 @@ COPY --from=build /app/site /usr/share/nginx/html
 FROM app-base AS final
 WORKDIR /app
 CMD ["node", "src/index.js"]
+# Cleaned Dockerfile, added final runtime stage
