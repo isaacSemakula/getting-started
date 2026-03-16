@@ -69,3 +69,6 @@ Add final runtime stage to Dockerfile to run node app
 FROM app-base
 WORKDIR /app
 CMD ["node", "src/index.js"]
+FROM app-base
+WORKDIR /app
+CMD ["node", "src/index.js"]
