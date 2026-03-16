@@ -39,7 +39,7 @@ COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
 FROM app-base
 WORKDIR /app
-
+#install production node_modules in final runtime stage"
 # Install only production dependencies
 RUN yarn install --production
 
