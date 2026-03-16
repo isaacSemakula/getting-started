@@ -42,7 +42,7 @@ COPY --from=build /app/site /usr/share/nginx/html
 FROM app-base
 WORKDIR /app
 
-# Install production dependencies
+# Install dependencies in the container at runtime
 RUN yarn install --production
 
 CMD ["node", "src/index.js"]
