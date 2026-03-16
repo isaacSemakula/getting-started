@@ -38,8 +38,7 @@ FROM --platform=$TARGETPLATFORM nginx:alpine
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
 
-# Final runtime stage to run Node.js app with dependencies installed
-FROM app-base
+FROM app-base AS final
 WORKDIR /app
 RUN yarn install --production
 CMD ["node", "src/index.js"]
