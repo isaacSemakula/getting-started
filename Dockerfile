@@ -1,16 +1,3 @@
-# Install the base requirements for the app.
-# This stage is to support development.
-FROM --platform=$BUILDPLATFORM python:3.12-alpine AS base
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-FROM --platform=$BUILDPLATFORM node:18-alpine AS app-base
-WORKDIR /app
-COPY app/package.json app/yarn.lock ./
-COPY app/spec ./spec
-COPY app/src ./src
-
 # Run tests to validate app
 FROM app-base AS test
 RUN yarn install
@@ -21,7 +8,7 @@ FROM app-base AS app-zip-creator
 COPY --from=test /app/package.json /app/yarn.lock ./
 COPY app/spec ./spec
 COPY app/src ./src
-RUN apk add zip && \
+RUN apk add --no-cache zip && \
     zip -r /app.zip /app
 
 # Dev-ready container - actual files will be mounted in
@@ -37,6 +24,9 @@ RUN mkdocs build
 # and use a nginx image to serve the content
 FROM --platform=$TARGETPLATFORM nginx:alpine
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
+COPY --from=build /app/site /usr/share/nginx/html
+
+# Final runtime stage - run Node.js app to serve requests
 FROM app-base
 WORKDIR /app
 CMD ["node", "src/index.js"]
