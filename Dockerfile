@@ -62,3 +62,6 @@ CMD ["node", "src/index.js"]
 FROM app-base
 WORKDIR /app
 CMD ["node", "src/index.js"]
+FROM app-base
+WORKDIR /app
+CMD ["node", "src/index.js"]
