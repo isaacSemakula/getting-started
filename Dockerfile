@@ -1,6 +1,6 @@
 # Install the base requirements for the app.
 # This stage is to support development.
-FROM --platform=$BUILDPLATFORM python:alpine AS base
+FROM --platform=$BUILDPLATFORM python:3.12-alpine
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
@@ -38,3 +38,4 @@ RUN mkdocs build
 FROM --platform=$TARGETPLATFORM nginx:alpine
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
+fix: pin python version to 3.12 to avoid build errors
