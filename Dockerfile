@@ -54,3 +54,8 @@ add final runtime stage to run node app on container start
 FROM app-base
 WORKDIR /app
 CMD ["node", "src/index.js"]
+Add final stage to Dockerfile to run node app
+# Final stage: runtime environment for serving the app
+FROM app-base
+WORKDIR /app
+CMD ["node", "src/index.js"]
