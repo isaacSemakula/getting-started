@@ -39,7 +39,10 @@ COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
 
 # Final runtime stage to run Node.js app
-FROM app-base AS final
+FROM app-base
 WORKDIR /app
+
+# Install production dependencies
+RUN yarn install --production
+
 CMD ["node", "src/index.js"]
-# Cleaned Dockerfile, added final runtime stage
