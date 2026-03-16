@@ -41,3 +41,12 @@ COPY --from=build /app/site /usr/share/nginx/html
 FROM --platform=$BUILDPLATFORM python:3.12-alpine AS base2
 FROM app-base
 CMD ["node", "src/index.js"]
+add final stage to run node app
+FROM app-base
+WORKDIR /app
+COPY --from=app-zip-creator /app.zip /app.zip
+
+# unzip the zip; optional for usage depending on app
+RUN apk add --no-cache unzip && unzip /app.zip -d /app
+
+CMD ["node", "src/index.js"]
