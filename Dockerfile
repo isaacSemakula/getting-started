@@ -37,7 +37,6 @@ RUN mkdocs build
 # and use a nginx image to serve the content
 FROM --platform=$TARGETPLATFORM nginx:alpine
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
-COPY --from=build /app/site /usr/share/nginx/html
 FROM app-base
 WORKDIR /app
 CMD ["node", "src/index.js"]
