@@ -1,3 +1,16 @@
+# Base stage - Python environment (for docs)
+FROM --platform=$BUILDPLATFORM python:3.12-alpine AS base
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Node.js app base stage
+FROM --platform=$BUILDPLATFORM node:18-alpine AS app-base
+WORKDIR /app
+COPY app/package.json app/yarn.lock ./
+COPY app/spec ./spec
+COPY app/src ./src
+
 # Run tests to validate app
 FROM app-base AS test
 RUN yarn install
@@ -11,7 +24,7 @@ COPY app/src ./src
 RUN apk add --no-cache zip && \
     zip -r /app.zip /app
 
-# Dev-ready container - actual files will be mounted in
+# Dev-ready container - actual files will be mounted in (for mkdocs live preview)
 FROM --platform=$BUILDPLATFORM base AS dev
 CMD ["mkdocs", "serve", "-a", "0.0.0.0:8000"]
 
@@ -20,13 +33,12 @@ FROM --platform=$BUILDPLATFORM base AS build
 COPY . .
 RUN mkdocs build
 
-# Extract the static content from the build
-# and use a nginx image to serve the content
+# Extract the static content from the build and use nginx to serve them
 FROM --platform=$TARGETPLATFORM nginx:alpine
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
 
-# Final runtime stage - run Node.js app to serve requests
-FROM app-base
+# Final runtime stage to run Node.js app
+FROM app-base AS final
 WORKDIR /app
 CMD ["node", "src/index.js"]
