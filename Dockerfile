@@ -38,5 +38,5 @@ RUN mkdocs build
 FROM --platform=$TARGETPLATFORM nginx:alpine
 COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
 COPY --from=build /app/site /usr/share/nginx/html
-FROM --platform=$BUILDPLATFORM python:3.12-alpine AS base
-CMD ["node", "app/src/index.js"]
+FROM app-base
+CMD ["node", "src/index.js"]
